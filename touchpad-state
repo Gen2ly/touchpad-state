@@ -38,7 +38,7 @@ syndcmdfile=/tmp/touchpad-state-syndaemon.cmdline
 case $1 in
   --off )
     # syndaemon disable if running.
-    if syndpid=$(pgrep -x syndaemon); then
+    if syndpid=$(pgrep -x syndaemon | head -n 1); then
       # record command line options and arguments.
       sed 's/\x00/ /g' /proc/$syndpid/cmdline > "$syndcmdfile"
       killall syndaemon
