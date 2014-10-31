@@ -40,7 +40,7 @@ case $1 in
     # syndaemon disable if running.
     if syndpid=$(pgrep -x syndaemon); then
       # record command line options and arguments.
-      echo "$(xargs -0 < /proc/$syndpid/cmdline)" >| $syndcmdfile
+      sed 's/\x00/ /g' /proc/$syndpid/cmdline > "$syndcmdfile"
       killall syndaemon
     fi
 
@@ -48,27 +48,28 @@ case $1 in
     if [ "$user" = $USER ]; then
       DISPLAY=$display XAUTHORITY=$xauthority bash -c '\
         synclient TouchpadOff=1
-        notify-send "Touchpad disabled."' &
+        notify-send --expire-time=2 "Touchpad disabled."' &
     else
       DISPLAY=$display XAUTHORITY=$xauthority su $user - -c '\
         synclient TouchpadOff=1
-        notify-send "Touchpad disabled."' &
+        notify-send --expire-time=2 "Touchpad disabled."' &
     fi ;;
   --on )
     # syndaemon run if run previously and not running now.
       if [ -f "$syndcmdfile" ] && ! pgrep -x syndaemon > /dev/null; then
         $(< "$syndcmdfile") -d
+        rm "$syndcmdfile"
       fi
 
     # touchpad enable.
     if [ "$user" = $USER ]; then
       DISPLAY=$display XAUTHORITY=$xauthority bash -c '\
         synclient TouchpadOff=0
-        notify-send "Touchpad enabled."' &
+        notify-send --expire-time=2 "Touchpad enabled."' &
     else
       DISPLAY=$display XAUTHORITY=$xauthority su $user - -c '\
         synclient TouchpadOff=0
-        notify-send "Touchpad enabled."' &
+        notify-send --expire-time=2 "Touchpad enabled."' &
     fi ;;
   * ) usage && exit
 esac
