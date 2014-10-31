@@ -48,11 +48,11 @@ case $1 in
     if [ "$user" = $USER ]; then
       DISPLAY=$display XAUTHORITY=$xauthority bash -c '\
         synclient TouchpadOff=1
-        notify-send --expire-time=2 "Touchpad disabled."' &
+        notify-send --hint=int:transient:1 "Touchpad disabled."' &
     else
       DISPLAY=$display XAUTHORITY=$xauthority su $user - -c '\
         synclient TouchpadOff=1
-        notify-send --expire-time=2 "Touchpad disabled."' &
+        notify-send --hint=int:transient:1 "Touchpad disabled."' &
     fi ;;
   --on )
     # syndaemon run if run previously and not running now.
@@ -65,11 +65,11 @@ case $1 in
     if [ "$user" = $USER ]; then
       DISPLAY=$display XAUTHORITY=$xauthority bash -c '\
         synclient TouchpadOff=0
-        notify-send --expire-time=2 "Touchpad enabled."' &
+        notify-send --hint=int:transient:1 "Touchpad enabled."' &
     else
       DISPLAY=$display XAUTHORITY=$xauthority su $user - -c '\
         synclient TouchpadOff=0
-        notify-send --expire-time=2 "Touchpad enabled."' &
+        notify-send --hint=int:transient:1 "Touchpad enabled."' &
     fi ;;
   * ) usage && exit
 esac
