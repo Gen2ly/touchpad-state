@@ -3,7 +3,8 @@
 
 # Usage
 usage () { echo "${0##*/} [--off] [--on] — set the touchpad state" ; }
-[ $# -eq 0 -o $# -gt 1 ] || [ "$1" != --off -o "$1" != --on ] && usage && exit 1
+#[ $# -eq 0 -o $# -gt 1 ] || [ "$1" != --off -o "$1" != --on ] && usage && exit 1
+[ $# -eq 1 -a "$1" = --off -o "$1" = --on ] || { usage ; exit 1 ; }
 
 # X.org server process name
 xorgprc=Xorg
@@ -38,6 +39,7 @@ case $1 in
     if syndpid=$(pgrep -x syndaemon | head -n 1); then
       # record command line options and arguments.
       sed 's/\x00/ /g' /proc/$syndpid/cmdline > "$syndcmdfile"
+      chmod a+w "$syndcmdfile"
       killall syndaemon
     fi
 
@@ -55,7 +57,7 @@ case $1 in
     # syndaemon run if run previously and not running now
       if [ -f "$syndcmdfile" ] && ! pgrep -x syndaemon > /dev/null; then
         $(< "$syndcmdfile") -d
-        rm "$syndcmdfile"
+        rm -f "$syndcmdfile"
       fi
 
     # touchpad enable
