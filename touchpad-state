@@ -8,7 +8,7 @@ usage () { echo "${0##*/} [--off] [--on] — set the touchpad state" ; }
 
 # X.org server process name
 xorgprc=Xorg
-xorgpid=$(pgrep -x $xorgprc)
+xorgpid=$(pgrep -o -x $xorgprc)
 
 # X.org server test if running
 if [ ! "$xorgpid" ]; then
